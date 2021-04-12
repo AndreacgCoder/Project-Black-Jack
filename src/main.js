@@ -1,28 +1,30 @@
-import {Card} from './Modulo_de_directorios/Cards.js';
 /**
 Juego de cartas BlackJack
  **/
 
 main()
+const Cards = require('./Modulo_de_directorios/Cards');
+
 
 function main(){
-    document.getElementById("quit").addEventListener("click", quit);
+    document.getElementById("restart").addEventListener("click", restart);
+    document.getElementById("stay").addEventListener("click", stay);
     document.getElementById("hit").addEventListener("click", hit);
-    let cardList = JSON.parse(cards.json);
+    var cardList = JSON.parse(cards.json);
     var firstCards = FirstCards(cardList);
     console.log('firstCards = ' + firstCards);
-    console.log(document.getElementById("hand"));//.update(firstCards);
+    console.log(document.getElementById("hand"));
     document.getElementById("hand").innerHTML = document.getElementById("hand").innerHTML + firstCards[0].text;
     
 }
 
 function hit(cardsHand){
-    updateHand(card);
     cardsHand.push(newCard());
+    updateHand(card);
     
 }
 
-function quit(){
+function stay(){
     
     updateTable(card);
 }
@@ -36,14 +38,14 @@ function updateHand(card){
 }
 
 function FirstCards (){
-    console.log(a, b);
-    let cardsHand = [newCard(a), newCard(b)];
+    let cardsHand = [newCard(), newCard()];
+    console.log(cardsHand[0], cardsHand[1]);
     return cardsHand;
 }
 
-function newCard (cardList){
+function newCard (){
     const a = Math.floor(Math.random()*51);
-    let card = [cardList[a]];
+    let card = cardList[a];
     return card;
 }
 
