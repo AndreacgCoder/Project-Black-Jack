@@ -2,55 +2,100 @@
 Juego de cartas BlackJack
  **/
 import Card from './cards.js';
+import * as puntuation from './puntuation';
 
-main();
+var cardslist = [];
+var handplayer = [];
+var handbank = [];
 
 
-function main(){
-    document.getElementById("restart").addEventListener("click", restart);
-    document.getElementById("stay").addEventListener("click", stay);
-    document.getElementById("hit").addEventListener("click", hit);
-    var cardslist = newdeck();
-    const firsthand = firstcards(cardslist);
-    console.log('firstcards = ' + firsthand);
-    console.log(document.getElementById("hand"));
-    document.getElementById("hand").innerHTML = document.getElementById("hand").innerHTML + firsthand[0].text + " " + firsthand[1].text;
-    
+document.getElementById("restart").addEventListener("click", restart);
+document.getElementById("stay").addEventListener("click", stay);
+document.getElementById("hit").addEventListener("click", hit);
+startgame();
+//scoregame();
+
+
+function startgame(){
+    cardslist = newdeck();
+    handplayer = firstcards(cardslist);
+    handbank = firstcards(cardslist);
+    console.log(document.getElementById("bank"));
+    console.log(document.getElementById("player"));
+    document.getElementById("player").innerHTML = document.getElementById("player").innerHTML + handplayer[0].text + " " + handplayer[1].text;
+    document.getElementById("bank").innerHTML = document.getElementById("bank").innerHTML + handbank[0].text + " " + handbank[1].text;
 }
 
-function hit(cardsHand){
-    cardsHand.push(newCard());
-    updateHand(card);
-    
+function hit(){
+    var card = newCard();
+    handplayer.push(card);
+    updateHand(card); 
+    updateValue('player');
 }
 
-function stay(){
-    
-    updateTable(card);
+function updateValue(player){
+    var value = 0;
+    if (player == 'player'){
+        handplayer.forEach(cardInHand => value = value + cardInHand.value);
+        document.getElementById("playerValue").innerHTML = "<h2>" + value + "</h2>";
+    } else {
+        handplayer.forEach(cardInHand => value = value + cardInHand.value);
+        document.getElementById("bankValue").innerHTML = "<h2>" + value + "</h2>";
+    }
 }
 
-function updateTable(card){
-    document.getElementById("table").innerHTML = document.getElementById("table").innerHTML + card.text;
+function scoregame(){
+    scorebank();
+}
+
+function scorebank() {
+    if(handbank[0].value + handbank[1].value >=17) {
+        stay(bank);
+    } else{
+        hit(handbank);
+    }
+}
+
+function restart(){
+    handplayer = [];
+    handbank = [];
+    startgame();
+}
+
+function stay(hand) {
+    if (hand === handbank){
+        document.getElementById("bank").innerHTML = "Puntuación banca:"; 
+    }
 }
 
 function updateHand(card){
-    document.getElementById("hand").innerHTML = document.getElementById("hand").innerHTML + card.text;
+    console.log(card);
+    document.getElementById("player").innerHTML = document.getElementById("player").innerHTML + " " + card.text;
 }
 
-function firstcards (cardslist){
-    let cardsHand = [newCard(cardslist), newCard(cardslist)];
+function firstcards (){
+    let cardsHand = [newCard(), newCard()];
     console.log(cardsHand[0], cardsHand[1]);
     return cardsHand;
 }
 
-function newCard (cardslist){
-    const a = Math.floor(Math.random()*51);
-    console.log(cardslist)
+function newCard (){
+    var cardsListSize = cardslist.length - 1;
+    console.log('size '+ cardsListSize);
+    var a = Math.floor(Math.random()*cardsListSize);
+    console.log('cardsList in newCard is ' + cardslist);
     console.log(a);
     var card = cardslist[a];
+    console.log(card);
+    cardslist.splice(a, 1);
+    printDECK();
     return card;
 }
 
+function printDECK() {
+    console.log('DECK');
+    cardslist.forEach(element => console.log(element));
+}
 
 function newdeck (){
 
@@ -106,6 +151,7 @@ function newdeck (){
     new Card ("clubs", "black", "J", 10, 49),
     new Card ("clubs", "black", "Q", 10, 50),
     new Card ("clubs", "black", "K", 10, 51)];
-
+    console.log('hola' + cardslist.length);
+    console.log(typeof cardslist);
     return cardslist;
 }
