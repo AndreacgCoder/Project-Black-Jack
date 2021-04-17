@@ -6,9 +6,26 @@
   padding: 2rem;
 }
 
-#canvas {
-  display: block;
-  margin: 2rem auto;
-  width: 540px;
-  height: 540px;
+body {
+  background-image: url("./imagenes/fondo.png");
 }
+
+#play {
+  text-align: center;
+}
+
+#buttonContainer {
+  border: 2px solid white;
+ 
+}
+
+#buttonContainer input.enviar:hover {
+  cursor: pointer;
+}
+
+img {
+  width: 70px;
+  height: 90px;
+}
+
+
