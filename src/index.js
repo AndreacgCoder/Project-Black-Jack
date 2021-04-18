@@ -2,6 +2,7 @@
 Juego de cartas BlackJack
  **/
 import Card from './cards.js';
+import ConfettiGenerator from "confetti-js";
 
 var cardslist = [];
 var handplayer = [];
@@ -13,10 +14,10 @@ var valuebank = 0;
 document.getElementById("restart").addEventListener("click", restart);
 document.getElementById("stay").addEventListener("click", stay);
 document.getElementById("hit").addEventListener("click", hit);
-/*var card = new Card ("heart", "red", "A", [1,11], 0);*/
-/*updateHand(card);*/
 startgame();
-updateBothValues();
+updateValue('player');
+updateValue('bank');
+
 
 
 function startgame(){
@@ -24,14 +25,45 @@ function startgame(){
     handplayer = firstcards(cardslist);
     handbank = firstcards(cardslist);
     calculateValues();
-    console.log(document.getElementById("bank"));
-    console.log(document.getElementById("player"));
-    document.getElementById("player").innerHTML = document.getElementById("player").innerHTML + handplayer[0].text + " " + handplayer[1].text;
-    document.getElementById("bank").innerHTML = document.getElementById("bank").innerHTML + handbank[0].text + " " + handbank[1].text;
     document.getElementById("player").innerHTML = document.getElementById("player").innerHTML + newCardPrint(handplayer[0]);
     document.getElementById("player").innerHTML = document.getElementById("player").innerHTML + newCardPrint(handplayer[1]); 
     document.getElementById("bank").innerHTML = document.getElementById("bank").innerHTML + newCardPrint(handbank[0]);
-    document.getElementById("bank").innerHTML = document.getElementById("bank").innerHTML + newCardPrint(handbank[1]);   
+    document.getElementById("bank").innerHTML = document.getElementById("bank").innerHTML + '<img src="reverso.png" class="reverso"> </img>';
+    if(handplayer[0].text =='A' && handplayer[1].text == 'A'){
+        handbank[0].value = 11;
+        handbank[1].value = 1;
+    }
+}
+
+function mostrar(){
+    document.querySelector("#bank > img.reverso").remove();
+    document.getElementById("bank").innerHTML = document.getElementById("bank").innerHTML + newCardPrint(handbank[1]);
+}
+
+function hit(){
+    var card = newCard();
+    handplayer.forEach(cardInHand => valueplayer = valueplayer + cardInHand.value);
+    if (card.number === 0 || card.number === 26 || card.number===39 || card.number === 13) {
+        if (valueplayer+11 > 21 ){
+            card.value = 1;
+        }
+    }
+    handplayer.push(card);
+    var i;
+    valueplayer=0;
+    handplayer.forEach(cardInHand => valueplayer = valueplayer + cardInHand.value);
+    for( i=0; i<handplayer.length - 1; i++) {
+        if (handplayer[i].text == 'A') {
+            if (valueplayer > 21){
+                handplayer[i].value = 1;
+            }
+        }
+    }
+    updateHand(card); 
+    updateValue('player');
+    if (valueplayer>21) {
+        stay();
+    }
 }
 
 function calculateValues(){
@@ -39,23 +71,7 @@ function calculateValues(){
     handplayer.forEach(cardInHand => valueplayer = valueplayer + cardInHand.value);
     valuebank = 0;
     handbank.forEach(cardInHand => valuebank = valuebank + cardInHand.value);
-}
-
-function hit(){
-    var card = newCard();
-    if (card.number === 0 || card.number === 26 || card.number===39 || card.number === 13) {
-        card.value = 11;
-        calculateValues();
-        if (valueplayer > 21 ){
-            card.value = 1;
-        }
-    }
-    handplayer.push(card);
-    updateHand(card); 
-    updateValue('player');
-    if (valueplayer>21) {
-        stay();
-    }
+    console.log('calculaValues HANDBANK' + handbank);
 }
 
 function updateValue(player){
@@ -67,6 +83,81 @@ function updateValue(player){
     }
 }
 
+function stay() {
+    var valuebank = 0;
+    handbank.forEach(cardInHand => valuebank = valuebank + cardInHand.value);
+    mostrar();
+    if(handbank[0].text =='A' && handbank[1].text == 'A'){
+        handbank[0].value = 11;
+        handbank[1].value = 1;
+    }
+    valuebank = handbank[0].value + handbank[1].value;
+    while (valuebank < 17){
+        var card = newCard();
+        if (card.number === 0 || card.number === 26 || card.number===39 || card.number === 13) {
+            if (valuebank + 11 > 21 ){
+                card.value = 1;
+            }
+        }
+        handbank.push(card);
+        valuebank = 0;
+        var i = 0;
+        handbank.forEach(cardInHand => valuebank = valuebank + cardInHand.value);
+        for( i=0; i<handbank.length - 1; i++) {
+            if (handbank[i].text == 'A') {
+                if (valuebank > 21){
+                    handbank[i].value = 1;
+                }
+            }
+        }
+        valuebank=0;
+        updateHandBank(card);
+        handbank.forEach(cardInHand => valuebank = valuebank + cardInHand.value);
+    }
+    updateValue('bank');
+    result();
+}
+function result(){
+    if((valueplayer > 21 && valuebank > 21) || (valueplayer === valuebank)){
+        document.getElementById("resum").innerHTML = "It's a draw";
+    } else if ((valuebank < 21 && valueplayer > 21) || (valuebank <= 21 && valueplayer < valuebank)){
+        document.getElementById("resum").innerHTML = "Dealer's WIN";
+    } else if ((handplayer[0].value == 10 && handplayer[1].text=='A') || (handplayer[1].value == 10 && handplayer[0].text=='A')) {
+            document.getElementById("resum").innerHTML = "YOU WIN! BLACKJACK";
+    } else {
+            document.getElementById("resum").innerHTML = "YOU WIN!";
+    }
+    document.getElementById("stay").disabled = true;
+    document.getElementById("hit").disabled = true;
+}
+
+function updateHand(card){
+    document.getElementById("player").innerHTML = document.getElementById("player").innerHTML + newCardPrint(card);
+}
+
+function updateHandBank(card){
+    document.getElementById("bank").innerHTML = document.getElementById("bank").innerHTML + newCardPrint(card);
+}
+
+function newCardPrint(card){
+    return "<img class=\"card\" src=\"" + "./imagenes/" + card.number + ".png" + "\"></img>";
+}
+
+function firstcards (){
+    let cardsHand = [newCard(), newCard()];
+    return cardsHand;
+}
+
+function newCard (){
+    var cardsListSize = cardslist.length - 1;
+    var a = Math.floor(Math.random()*cardsListSize);
+    var card = cardslist[a];
+    if (card.number === 0 || card.number === 26 || card.number===39 || card.number === 13) {
+        card.value = 11;
+    }
+    cardslist.splice(a, 1);
+    return card;
+}
 
 function restart(){
     handplayer = [];
@@ -78,88 +169,9 @@ function restart(){
     document.getElementById("stay").disabled = false;
     document.getElementById("hit").disabled = false;
     startgame();
-    updateBothValues();
-    document.getElementById("resum").innerHTML = "";
-}
-
-function stay() {
-    var valuebank = 0;
-    handbank.forEach(cardInHand => valuebank = valuebank + cardInHand.value);
-    while (valuebank < 17){
-        var card = newCard();
-        if (card.number === 0 || card.number === 26 || card.number===39 || card.number === 13) {
-            card.value = 11;
-            if (valueplayer > 21 ){
-                card.value = 1;
-            }
-        }
-        handbank.push(card);
-        handbank.forEach(cardInHand => valuebank = valuebank + cardInHand.value);
-            updateHandBank(card);
-            updateValue('bank');
-    }
-    result();
-}
-function result(){
-    document.getElementById("stay").disabled = true;
-    document.getElementById("hit").disabled = true;
-    if(valueplayer > 21 && valuebank > 21){
-        document.getElementById("resum").innerHTML = "It's a draw";
-    } else if ((valuebank < 21 && valueplayer > 21) || (valuebank < 21 && valueplayer < valuebank)){
-        document.getElementById("resum").innerHTML = "Has perdido!";
-    } else {
-        document.getElementById("resum").innerHTML = "Has ganado!";
-    }
-}
-
-function updateHand(card){
-    console.log(card);
-    //document.getElementById("player").innerHTML = document.getElementById("player").innerHTML + " " + card.text;
-
-    document.getElementById("player").innerHTML = document.getElementById("player").innerHTML + newCardPrint(card);
-}
-
-function newCardPrint(card){
-    return "<img src=\"" + "./imagenes/" + card.number + ".png" + "\" ></img>";
-    /*" + card.text + "\" ></img>";*/
-}
-
-function updateHandBank(card){
-    console.log(card);
-    document.getElementById("bank").innerHTML = document.getElementById("bank").innerHTML + " " + card.text;
-    document.getElementById("bank").innerHTML = document.getElementById("bank").innerHTML + newCardPrint(card);
-}
-
-function updateBothValues(){
     updateValue('player');
-    updateValue('bank');
-}
-
-function firstcards (){
-    let cardsHand = [newCard(), newCard()];
-    console.log(cardsHand[0], cardsHand[1]);
-    return cardsHand;
-}
-
-function newCard (){
-    var cardsListSize = cardslist.length - 1;
-    console.log('size '+ cardsListSize);
-    var a = Math.floor(Math.random()*cardsListSize);
-    console.log('cardsList in newCard is ' + cardslist);
-    console.log(a);
-    var card = cardslist[a];
-    console.log(card);
-    if (card.number === 0 || card.number === 26 || card.number===39 || card.number === 13) {
-        card.value = 11;
-    }
-    cardslist.splice(a, 1);
-    printDECK();
-    return card;
-}
-
-function printDECK() {
-    console.log('DECK');
-    cardslist.forEach(element => console.log(element));
+    document.getElementById("bankValue").innerHTML = "";
+    document.getElementById("resum").innerHTML = "";
 }
 
 function newdeck (){
@@ -216,7 +228,5 @@ function newdeck (){
     new Card ("clubs", "black", "J", 10, 49),
     new Card ("clubs", "black", "Q", 10, 50),
     new Card ("clubs", "black", "K", 10, 51)];
-    console.log('hola' + cardslist.length);
-    console.log(typeof cardslist);
     return cardslist;
 }
