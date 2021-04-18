@@ -2,7 +2,6 @@
 Juego de cartas BlackJack
  **/
 import Card from './cards.js';
-import ConfettiGenerator from "confetti-js";
 
 var cardslist = [];
 var handplayer = [];
@@ -119,13 +118,13 @@ function stay() {
 }
 function result(){
     if((valueplayer > 21 && valuebank > 21) || (valueplayer === valuebank)){
-        document.getElementById("resum").innerHTML = "It's a draw";
+        document.getElementById("resum").innerHTML = "♠ IT'S A DRAW ♠";
     } else if ((valuebank < 21 && valueplayer > 21) || (valuebank <= 21 && valueplayer < valuebank)){
-        document.getElementById("resum").innerHTML = "Dealer's WIN";
+        document.getElementById("resum").innerHTML = "♠ DEALER'S WIN ♠";
     } else if ((handplayer[0].value == 10 && handplayer[1].text=='A') || (handplayer[1].value == 10 && handplayer[0].text=='A')) {
-            document.getElementById("resum").innerHTML = "YOU WIN! BLACKJACK";
+            document.getElementById("resum").innerHTML = "♠ YOU WIN: BLACKJACK ♠";
     } else {
-            document.getElementById("resum").innerHTML = "YOU WIN!";
+            document.getElementById("resum").innerHTML = "♠ YOU WIN! ♠";
     }
     document.getElementById("stay").disabled = true;
     document.getElementById("hit").disabled = true;

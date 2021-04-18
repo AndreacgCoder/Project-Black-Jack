@@ -57,20 +57,20 @@ button:hover{
 img {
   width: 80px;
   height: 100px;
-  border: 3px solic black;
+  border: 3px solid black;
 }
 
 #resum {
   position: absolute;
   left: 70%;
   z-index: 10;
-  top: 50%;
-  font-size: 50px;
-  color: #000000;
-  background-color: yellow;
+  top: 45%;
+  font-size: 45px;
+  color: black;
+  background-color:  yellow;
   width: 300px;
   text-align: center;
-  
+  font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 
