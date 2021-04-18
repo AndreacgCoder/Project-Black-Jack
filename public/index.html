@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Web site created using create-snowpack-app" />
     <link rel="stylesheet" type="text/css" href="/index.css" />
-    <title>Snowpack App</title>
+    <link rel="shortcut icon" href="chip.png">
+
+    <title>BLACKJACK</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <script type="module" src="/dist/index.js"></script>
     <div id="play">
     <div id = "bankContainer">
-      <h1>BANK</h1>
-      <div id = "bank">
-      </div>
+      <h1>DEALER</h1>
+      <div id = "bank"></div>
       <div id = "bankValueContainer">
-        <h2>VALUE = </h2>
-        <div id = "bankValue">
-        </div>
+        <h2 class="value">VALUE = </h2>
+        <div id = "bankValue"></div>
       </div>
     </div>
     <div id = "playerContainer">
@@ -26,23 +26,20 @@
       <div id = "player">
       </div>
       <div id = "playerValueContainer">
-        <h2>VALUE = </h2>
+        <h2 class="value">VALUE = </h2>
         <div id = "playerValue">
         </div>
       </div>
     </div>
-    <div id ="resum">
-      
-    </div>
+
     <div id = "buttonContainer">
       <button type="restart" id ="restart">RESTART</button>
       <button type="hit" id="hit">HIT</button>
       <button type="stay" id="stay">STAY</button>
     </div>
-    <!--<div style="width:1px; height: 1px;">
-      <img src="./imagenes/0.png" alt ="">-->
     </div>
    </div>
+   <div id ="resum"></div>
   </body>
   
 </html>
